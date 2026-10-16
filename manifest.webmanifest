@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Nossa viagem à Itália",
-  "short_name": "Viagem Itália",
-  "description": "Pagamentos e roteiro da viagem em grupo pela Itália.",
+  "name": "Tour Católico com Kat",
+  "short_name": "Tour com Kat",
+  "description": "Roteiro e preparativos da viagem à Itália.",
   "lang": "pt-BR",
   "start_url": "./",
   "scope": "./",
@@ -11,10 +11,10 @@
   "theme_color": "#19382f",
   "icons": [
     {
-      "src": "app-icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "src": "San Marino.jpg",
+      "sizes": "1206x1206",
+      "type": "image/jpeg",
+      "purpose": "any"
     }
   ]
 }

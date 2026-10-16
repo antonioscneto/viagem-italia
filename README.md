@@ -1,4 +1,4 @@
-# Andiamo — viagem em grupo pela Itália
+# Tour Católico com Kat — viagem à Itália
 
 Aplicativo web instalável para acompanhar pagamentos e roteiro. O grupo acessa o mesmo estado online com um código de acesso. Hospedagens, parcelas e pagamentos à vista só contam depois de serem registrados.
 
@@ -30,13 +30,24 @@ O app usa Supabase. Não publique o endereço do app até criar o projeto e ativ
 
    A chave pública pode ficar no site. **Nunca** use a `service_role`/secret key no navegador; ela fica apenas nos secrets gerenciados do Supabase.
 
-   O backup JSON é útil para arquivar ou restaurar dados. A importação substitui os dados compartilhados de todo o grupo.
+## Checklist compartilhado
+
+O checklist fica junto do estado da viagem no Supabase, sem substituir nem apagar pagamentos ou cidades visitadas.
+
+- Em uma instalação nova, `supabase/schema.sql` já cria a coluna e a função necessárias.
+- Em um projeto que já está em uso, execute `supabase/checklist-migration.sql` no **SQL Editor** antes de publicar a versão atualizada do app. Depois, na pasta do projeto já vinculada à Supabase CLI, publique a função atualizada:
+
+  ```bash
+  supabase functions deploy trip-sync
+  ```
+
+  A migração adiciona uma coluna com uma lista vazia padrão e cria uma nova função de gravação; os registros e a função de gravação anterior são preservados. Não é necessário alterar URL, chave pública ou código de acesso.
 
 ## Publicar sem substituir o CicloD'or
 
 O repositório original já usa GitHub Pages para outro site. Publique a viagem num **repositório separado** ou num novo site de hospedagem estática — não substitua a publicação existente.
 
-Inclua no site os arquivos `index.html`, `travel.css`, `travel.js`, `trip-config.js`, `trip-sync.js`, `manifest.webmanifest`, `service-worker.js` e `app-icon.svg`. O `supabase/` é usado para configurar o backend; não precisa ser servido ao público.
+Inclua no site os arquivos `index.html`, `travel.css`, `travel.js`, `trip-config.js`, `trip-sync.js`, `manifest.webmanifest`, `service-worker.js` e `San Marino.jpg`. O `supabase/` é usado para configurar o backend; não precisa ser servido ao público.
 
 Depois de publicar em HTTPS, envie o endereço ao grupo pelo WhatsApp. Cada pessoa abre o link e pode instalar o app:
 
@@ -54,10 +65,11 @@ O código de acesso não está incluído nos arquivos públicos. Compartilhe-o s
 
 ## Arquivos principais
 
-- `index.html` — estrutura do app e tela do código de acesso.
+- `index.html` — estrutura do app em abas, marca da viagem e tela do código de acesso.
 - `travel.css` — estilos responsivos.
-- `travel.js` — pagamentos, gráfico, roteiro e estado da interface.
+- `travel.js` — pagamentos, gráfico, roteiro, checklist e estado da interface.
 - `trip-sync.js` — comunicação com o endpoint protegido.
 - `trip-config.js` — URL do projeto Supabase e chave pública.
 - `supabase/schema.sql` — tabelas protegidas e controle de concorrência, sem dados privados da viagem.
+- `supabase/checklist-migration.sql` — atualização segura para adicionar o checklist a um projeto já configurado.
 - `supabase/functions/trip-sync/index.ts` — código de acesso, limite de tentativas e sincronização.

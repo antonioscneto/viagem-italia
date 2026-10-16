@@ -4,14 +4,15 @@ let shareGuides = [];
 let totalCost = 0;
 let shareCost = 0;
 const places = [
-  { id: "roma", name: "Roma", note: "Chegada · 29 dez", kind: "principal", number: "01", position: [12.4964, 41.9028], label: [10, 17] },
+  { id: "roma", name: "Roma", note: "Chegada · 30 dez", kind: "principal", number: "01", position: [12.4964, 41.9028], label: [10, 17] },
   { id: "san-marino", name: "San Marino", note: "30 dez — 1 jan", kind: "principal", number: "02", position: [12.4578, 43.9424], label: [20, -35] },
   { id: "loreto", name: "Loreto", note: "1 — 3 jan", kind: "principal", number: "03", position: [13.6095, 43.4408], label: [13, 13] },
   { id: "florenca", name: "Florença", note: "Base · 3 — 9 jan", kind: "principal", number: "04", position: [11.2558, 43.7696], label: [8, -22] },
   { id: "assisi", name: "Assis", note: "Passeio de um dia", kind: "daytrip", number: "05", position: [12.6196, 43.0707], label: [18, 24] },
   { id: "siena", name: "Siena", note: "Passeio de um dia", kind: "daytrip", number: "06", position: [11.3308, 43.3188], label: [10, 38] },
   { id: "san-gimignano", name: "San Gimignano", note: "Passeio de um dia", kind: "daytrip", number: "07", position: [11.0435, 43.4677], label: [-12, 33] },
-  { id: "pisa", name: "Pisa", note: "Passeio de um dia", kind: "daytrip", number: "08", position: [10.4017, 43.7228], label: [-6, -31] }
+  { id: "pisa", name: "Pisa", note: "Passeio de um dia", kind: "daytrip", number: "08", position: [10.4017, 43.7228], label: [-6, -31] },
+  { id: "roma", name: "Roma", note: "Parada final", kind: "principal", number: "09", position: [12.4964, 41.9028], label: [10, 17] }
 ];
 const checklistItems = [
   { id: "train-tickets", label: "Comprar as passagens de trem" },
@@ -282,8 +283,9 @@ function renderPlaces() {
 
   renderMap();
 
-  const visitedCount = state.visited.length;
-  document.querySelector("#route-progress").textContent = `${visitedCount} de ${places.length} lugares`;
+  const placeCount = new Set(places.map((place) => place.id)).size;
+  const visitedCount = state.visited.filter((id) => places.some((place) => place.id === id)).length;
+  document.querySelector("#route-progress").textContent = `${visitedCount} de ${placeCount} lugares`;
 }
 
 function activateTab(id) {
@@ -357,7 +359,8 @@ function renderMap() {
     }));
   }
 
-  for (const place of places) {
+  const mapPlaces = [...new Map(places.map((place) => [place.id, place])).values()];
+  for (const place of mapPlaces) {
     const [x, y] = mapPoint(place.position);
     const visited = state.visited.includes(place.id);
     const marker = svgElement("g", {
@@ -455,7 +458,7 @@ function saveState(nextState) {
     return true;
   } catch {
     setSaveStatus("Não foi possível salvar", true);
-    setMessage("O navegador não conseguiu salvar as alterações. Exporte uma cópia dos dados para não perdê-las.", "error");
+    setMessage("O navegador não conseguiu salvar as alterações. Verifique o espaço disponível e tente novamente.", "error");
     return false;
   }
 }
@@ -680,42 +683,6 @@ function toggleChecklistItem(id) {
   updateState({ version: 3, payments: [...state.payments], visited: [...state.visited], checklist }, "Lista atualizada para o grupo.");
 }
 
-function exportData() {
-  try {
-    const snapshot = {
-      app: "andiamo-italy-trip",
-      version: 3,
-      exportedAt: new Date().toISOString(),
-      payments: state.payments,
-      visited: state.visited,
-      checklist: state.checklist
-    };
-    const file = new Blob([JSON.stringify(snapshot, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(file);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "andiamo-dados-viagem-italia.json";
-    link.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-    setMessage("Cópia de segurança baixada.", "success");
-  } catch {
-    setMessage("Não foi possível criar o arquivo. Verifique as permissões de download do navegador.", "error");
-  }
-}
-
-async function importData(event) {
-  const file = event.target.files[0];
-  event.target.value = "";
-  if (!file) return;
-  try {
-    const imported = validateState(JSON.parse(await file.text()));
-    if (!window.confirm("Importar este arquivo vai substituir os pagamentos, as cidades marcadas e o checklist do grupo para todas as pessoas. Continuar?")) return;
-    updateState(imported, "Dados importados e sincronizados com o grupo.");
-  } catch (error) {
-    setMessage(`Não foi possível importar os dados: ${error.message}`, "error");
-  }
-}
-
 document.querySelector("#access-form").addEventListener("submit", (event) => {
   event.preventDefault();
   enterGroup(document.querySelector("#access-code").value.trim());
@@ -764,9 +731,6 @@ document.querySelector(".italy-map").addEventListener("keydown", (event) => {
     toggleVisited(event.target.dataset.place);
   }
 });
-document.querySelector("#export-button").addEventListener("click", exportData);
-document.querySelector("#import-button").addEventListener("click", () => document.querySelector("#import-input").click());
-document.querySelector("#import-input").addEventListener("change", importData);
 document.querySelector("#lock-button").addEventListener("click", () => {
   sessionStorage.removeItem("andiamo-group-code");
   window.location.reload();

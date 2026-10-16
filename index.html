@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#19382f">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Viagem Itália">
-    <meta name="description" content="Organize pagamentos, roteiro e preparativos da viagem em grupo pela Itália.">
-    <title>Itália, juntos | Viagem em grupo</title>
+    <meta name="apple-mobile-web-app-title" content="Tour Católico com Kat">
+    <meta name="description" content="Tour Católico com Kat: roteiro e preparativos da nossa viagem à Itália.">
+    <title>Tour Católico com Kat | Itália</title>
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="icon" href="app-icon.svg" type="image/svg+xml">
+    <link rel="icon" href="San Marino.jpg" type="image/jpeg">
+    <link rel="apple-touch-icon" href="San Marino.jpg">
     <link rel="stylesheet" href="travel.css">
     <script defer src="trip-config.js"></script>
     <script defer src="trip-sync.js"></script>
@@ -18,12 +19,12 @@
   <body>
     <section class="access-screen" id="access-screen" aria-labelledby="access-title">
       <form class="access-card" id="access-form">
-        <span class="brand-mark access-mark" aria-hidden="true">it.</span>
+        <img class="brand-logo access-mark" src="San Marino.jpg" alt="Brasão de San Marino">
         <p class="eyebrow">ESPAÇO DO GRUPO</p>
         <h1 id="access-title">Nossa viagem à Itália</h1>
         <p class="access-description">Digite o código para ver os pagamentos e o roteiro compartilhados.</p>
         <label class="form-field access-field"><span>Código de acesso</span><input id="access-code" type="password" inputmode="numeric" autocomplete="one-time-code" maxlength="32" required></label>
-        <button class="button button-primary access-submit" type="submit">Entrar no app <span aria-hidden="true">→</span></button>
+        <button class="button button-primary access-submit" type="submit">Entrar no app</button>
         <p class="access-message" id="access-message" role="status" aria-live="polite"></p>
         <p class="access-footnote">Os dados são sincronizados pela internet. Não informe o código fora do grupo.</p>
       </form>
@@ -31,16 +32,13 @@
 
     <main class="app-shell" id="trip-app" hidden>
       <header class="topbar">
-        <a class="brand" href="#inicio" aria-label="Itália, juntos — início">
-          <span class="brand-mark" aria-hidden="true">it.</span>
-          <span class="brand-copy"><strong>andiamo</strong><span>viagem em grupo</span></span>
+        <a class="brand" href="#inicio" aria-label="Tour Católico com Kat — início">
+          <img class="brand-logo" src="San Marino.jpg" alt="">
+          <span class="brand-copy"><strong>Tour Católico com Kat</strong></span>
         </a>
         <div class="topbar-actions">
           <span class="save-indicator"><i aria-hidden="true"></i><span id="save-status">Conectando ao grupo</span></span>
           <button class="button button-outline button-small" id="lock-button" type="button">Sair</button>
-          <button class="button button-outline button-small" id="import-button" type="button">Importar arquivo</button>
-          <button class="button button-light button-small" id="export-button" type="button">Baixar backup <span aria-hidden="true">↓</span></button>
-          <input id="import-input" type="file" accept="application/json,.json" hidden>
         </div>
       </header>
 
@@ -54,11 +52,11 @@
         <section class="hero" id="inicio" aria-labelledby="page-title">
           <p class="eyebrow hero-eyebrow">NOSSA PRÓXIMA AVENTURA</p>
           <h1 id="page-title">Nossa viagem à Itália</h1>
-          <p class="hero-intro">De Roma a Florença, uma viagem em grupo por oito lugares especiais.</p>
+          <p class="hero-intro">De Roma a Florença, uma viagem por oito lugares especiais.</p>
           <div class="hero-details">
             <p><strong>29 dez 2026 a 13 jan 2027</strong><span>Datas da viagem</span></p>
             <p><strong>5 viajantes</strong><span>Um grupo, muitas lembranças</span></p>
-            <a href="#tab-payments">Ver pagamentos <span aria-hidden="true">↓</span></a>
+            <a href="#tab-payments">Ver pagamentos</a>
           </div>
         </section>
 
@@ -82,7 +80,7 @@
               <div class="map-legend"><span><i class="route-swatch"></i>Roteiro principal</span><span><i class="daytrip-swatch"></i>Passeio de um dia</span></div>
             </div>
             <div class="itinerary-card">
-              <div class="itinerary-topline"><span>29 DEZ — 13 JAN</span><span>8 PARADAS</span></div>
+              <div class="itinerary-topline"><span>29 DEZ — 13 JAN</span><span>9 PARADAS</span></div>
               <div class="itinerary-list" id="itinerary-list"></div>
               <div class="itinerary-foot"><p>Assis, Siena, San Gimignano e Pisa: passeios de um dia com base em Florença.</p></div>
             </div>
@@ -176,7 +174,7 @@
         </section>
       </div>
 
-      <footer class="app-footer"><span>ANDIAMO <i>·</i> ITÁLIA EM GRUPO</span><span>Feito para viajar junto, sem perder a conta.</span></footer>
+      <footer class="app-footer"><span>TOUR CATÓLICO COM KAT <i>·</i> ITÁLIA</span><span>Feito para viajar junto.</span></footer>
     </main>
   </body>
 </html>

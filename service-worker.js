@@ -1,4 +1,4 @@
-const CACHE_NAME = "andiamo-italia-shell-v3";
+const CACHE_NAME = "andiamo-italia-shell-v4";
 const APP_FILES = [
   "./",
   "./index.html",
@@ -7,7 +7,7 @@ const APP_FILES = [
   "./trip-config.js",
   "./trip-sync.js",
   "./manifest.webmanifest",
-  "./app-icon.svg"
+  "./San Marino.jpg"
 ];
 
 self.addEventListener("install", (event) => {

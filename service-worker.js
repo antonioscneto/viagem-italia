@@ -1,12 +1,12 @@
-const CACHE_NAME = "andiamo-italia-shell-v4";
+const CACHE_NAME = "tour-catholico-kat-shell-v5";
 const APP_FILES = [
-  "./",
-  "./index.html",
-  "./travel.css",
-  "./travel.js",
-  "./trip-config.js",
-  "./trip-sync.js",
-  "./manifest.webmanifest",
+  "./?v=5",
+  "./index.html?v=5",
+  "./travel.css?v=5",
+  "./travel.js?v=5",
+  "./trip-config.js?v=5",
+  "./trip-sync.js?v=5",
+  "./manifest.webmanifest?v=5",
   "./San Marino.jpg"
 ];
 

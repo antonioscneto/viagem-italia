@@ -48,7 +48,12 @@ window.TripSync = (() => {
       return request(code, "load");
     },
     save(code, snapshot, revision) {
-      return request(code, "save", { revision, payments: snapshot.payments, visited: snapshot.visited });
+      return request(code, "save", {
+        revision,
+        payments: snapshot.payments,
+        visited: snapshot.visited,
+        checklist: snapshot.checklist
+      });
     }
   };
 })();

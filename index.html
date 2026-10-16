@@ -2,11 +2,11 @@
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#19382f">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Viagem Itália">
-    <meta name="description" content="Organize os pagamentos e o roteiro da viagem em grupo pela Itália.">
+    <meta name="description" content="Organize pagamentos, roteiro e preparativos da viagem em grupo pela Itália.">
     <title>Itália, juntos | Viagem em grupo</title>
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="app-icon.svg" type="image/svg+xml">
@@ -44,115 +44,137 @@
         </div>
       </header>
 
-      <section class="hero" id="inicio" aria-labelledby="page-title">
-        <p class="eyebrow hero-eyebrow">NOSSA PRÓXIMA AVENTURA</p>
-        <h1 id="page-title">Nossa viagem à Itália</h1>
-        <div class="hero-details">
-          <p><strong>29 dez 2026 a 13 jan 2027</strong><span>Datas da viagem</span></p>
-          <p><strong>5 viajantes</strong><span>Um grupo, muitas lembranças</span></p>
-          <a href="#pagamentos">Ver pagamentos <span aria-hidden="true">↓</span></a>
-        </div>
-      </section>
+      <nav class="tab-nav" role="tablist" aria-label="Seções da viagem">
+        <button class="tab-button is-active" id="tab-trip" type="button" role="tab" aria-selected="true" aria-controls="panel-trip" tabindex="0" data-tab="trip">A viagem</button>
+        <button class="tab-button" id="tab-numbers" type="button" role="tab" aria-selected="false" aria-controls="panel-numbers" tabindex="-1" data-tab="numbers">Em números</button>
+        <button class="tab-button" id="tab-payments" type="button" role="tab" aria-selected="false" aria-controls="panel-payments" tabindex="-1" data-tab="payments">Pagamentos</button>
+      </nav>
 
-      <section class="overview-section" aria-labelledby="overview-title">
-        <div class="section-heading">
-          <div><p class="eyebrow">O PLANO</p><h2 id="overview-title">A viagem, em números</h2></div>
-          <p class="section-note">Hospedagens divididas igualmente entre os cinco viajantes.</p>
-        </div>
-        <div class="overview-grid">
-          <article class="metric-card metric-total"><span class="metric-label">HOSPEDAGENS NO TOTAL</span><strong class="metric-value" id="total-cost">—</strong><span class="metric-caption">4 estadias · 14 noites reservadas</span><span class="metric-decoration" aria-hidden="true">€</span></article>
-          <article class="metric-card"><span class="metric-label">COTA POR PESSOA</span><strong class="metric-value" id="share-cost">—</strong><span class="metric-caption">Sua parte igual do total</span><span class="metric-decoration" aria-hidden="true">↗</span></article>
-          <article class="metric-card"><span class="metric-label">PAGAMENTOS REGISTRADOS</span><strong class="metric-value" id="payments-total">—</strong><span class="metric-caption" id="payments-caption">Repasses e pagamentos do grupo</span><span class="metric-decoration" aria-hidden="true">＋</span></article>
-          <article class="metric-card metric-due"><span class="metric-label">LORETO · A PAGAR</span><strong class="metric-value" id="loreto-due">—</strong><span class="metric-caption">Valor total da hospedagem</span><span class="metric-decoration" aria-hidden="true">⌁</span></article>
-        </div>
-      </section>
-
-      <section class="progress-section" id="pagamentos" aria-labelledby="progress-title">
-        <div class="section-heading">
-          <div><p class="eyebrow">ACOMPANHAMENTO DAS COTAS</p><h2 id="progress-title">Quanto cada pessoa já pagou?</h2></div>
-          <p class="section-note">A cota de cada viajante é <strong id="progress-share">—</strong></p>
-        </div>
-        <div class="progress-card">
-          <div class="progress-list" id="progress-list"></div>
-          <p class="progress-note">Só entram os pagamentos realmente lançados. As parcelas e os pagamentos à vista contam do mesmo jeito; o gráfico não presume pagamentos futuros.</p>
-        </div>
-      </section>
-
-      <section class="share-guide" aria-labelledby="share-guide-title">
-        <div class="section-heading">
-          <div><p class="eyebrow">PARA FACILITAR O ACERTO</p><h2 id="share-guide-title">Quanto cabe a cada pessoa?</h2></div>
-          <p class="section-note">Você pode pagar a parcela sugerida ou o total de uma vez.</p>
-        </div>
-        <div class="share-guide-grid" id="share-guide-grid"></div>
-        <p class="share-guide-note">As parcelas são uma referência, não cobranças automáticas. Registre cada pagamento quando ele acontecer. Os últimos valores podem variar alguns centavos para fechar o total informado.</p>
-      </section>
-
-      <section class="finance-section" aria-label="Hospedagens e acerto de pagamentos">
-        <div class="finance-main">
-          <div class="section-heading">
-            <div><p class="eyebrow">CADA PARADA</p><h2>Hospedagens</h2></div>
-            <span class="small-note">Valores em reais</span>
+      <div class="tab-panel" id="panel-trip" role="tabpanel" aria-labelledby="tab-trip" data-panel="trip">
+        <section class="hero" id="inicio" aria-labelledby="page-title">
+          <p class="eyebrow hero-eyebrow">NOSSA PRÓXIMA AVENTURA</p>
+          <h1 id="page-title">Nossa viagem à Itália</h1>
+          <p class="hero-intro">De Roma a Florença, uma viagem em grupo por oito lugares especiais.</p>
+          <div class="hero-details">
+            <p><strong>29 dez 2026 a 13 jan 2027</strong><span>Datas da viagem</span></p>
+            <p><strong>5 viajantes</strong><span>Um grupo, muitas lembranças</span></p>
+            <a href="#tab-payments">Ver pagamentos <span aria-hidden="true">↓</span></a>
           </div>
-          <div class="stay-list" id="stay-list"></div>
-          <p class="fine-print">Os valores das hospedagens são o total de cada reserva, não o que já foi pago no cartão. Registre cada pagamento quando ele acontecer. A última parcela do cartão de uma hospedagem pode ter ajuste de centavos. A noite de chegada em Roma (29–30 dez) não está incluída.</p>
-        </div>
-        <aside class="settlement-card" aria-labelledby="settlement-title">
-          <div class="settlement-heading"><div><p class="eyebrow">ACERTO DO GRUPO</p><h2 id="settlement-title">Quem paga o quê</h2></div><span class="settlement-icon" aria-hidden="true">↔</span></div>
-          <p class="settlement-intro">A cota considera as hospedagens divididas entre cinco. O saldo diminui somente quando um pagamento é registrado.</p>
-          <div class="traveler-list" id="traveler-list"></div>
-        </aside>
-      </section>
+        </section>
 
-      <section class="payments-section" aria-labelledby="payments-title">
-        <div class="section-heading payments-heading">
-          <div><p class="eyebrow">ACERTO MÊS A MÊS</p><h2 id="payments-title">Registrar um pagamento</h2></div>
-          <p class="section-note">Registre uma parcela ou um pagamento à vista. Para a cota inteira, escolha “Todas as hospedagens”.</p>
-        </div>
-        <form class="payment-form" id="payment-form">
-          <label class="form-field"><span>Quem pagou</span><select id="payer-select" required></select></label>
-          <label class="form-field"><span>Hospedagem</span><select id="stay-select" required></select></label>
-          <label class="form-field"><span>Quem recebeu</span><select id="recipient-select" required></select></label>
-          <label class="form-field"><span>Mês do pagamento</span><input id="month-input" type="month" required></label>
-          <label class="form-field amount-field"><span>Valor (R$)</span><input id="amount-input" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="0,00" required></label>
-          <button class="button button-primary" type="submit">Adicionar pagamento <span aria-hidden="true">＋</span></button>
-        </form>
-        <p class="message" id="message" role="status" aria-live="polite"></p>
-        <div class="history-heading"><h3>Histórico de pagamentos</h3><span id="payment-count">0 registros</span></div>
-        <div class="payment-table-wrap">
-          <table class="payment-table">
-            <thead><tr><th>MÊS</th><th>QUEM PAGOU</th><th>HOSPEDAGEM</th><th>QUEM RECEBEU</th><th>VALOR</th><th><span class="sr-only">Ação</span></th></tr></thead>
-            <tbody id="payments-body"></tbody>
-          </table>
-          <div class="empty-state" id="payments-empty"><span aria-hidden="true">↗</span><p>Nenhum pagamento por aqui ainda.</p><small>Os pagamentos registrados vão aparecer nesta lista.</small></div>
-        </div>
-      </section>
-
-      <section class="route-section" id="roteiro" aria-labelledby="route-title">
-        <div class="section-heading route-heading">
-          <div><p class="eyebrow">IL BEL VIAGGIO</p><h2 id="route-title">O caminho é de vocês</h2><p class="section-note">Toque em uma cidade no mapa ou na lista para marcar como visitada.</p></div>
-          <span class="route-progress" id="route-progress">0 de 8 lugares</span>
-        </div>
-        <div class="route-layout">
-          <div class="map-card">
-            <div class="map-topline"><span>ITÁLIA <i>·</i> ROTEIRO DO GRUPO</span><span class="map-north" aria-hidden="true">N ↑</span></div>
-            <div class="map-visual">
-              <svg class="italy-map" viewBox="0 0 390 540" role="img" aria-label="Mapa da Itália com as cidades da viagem. Selecione um ponto para marcar uma cidade como visitada.">
-                <rect width="390" height="540" fill="#edf3f1"/>
-                <g id="map-land"></g>
-                <path class="route-line" id="main-route"></path>
-                <g class="daytrip-routes" id="daytrip-routes"></g>
-                <g id="map-markers"></g>
-              </svg>
+        <section class="route-section" id="roteiro" aria-labelledby="route-title">
+          <div class="section-heading route-heading">
+            <div><p class="eyebrow">IL BEL VIAGGIO</p><h2 id="route-title">O caminho é de vocês</h2><p class="section-note">Toque em uma cidade no mapa ou na lista para marcar como visitada.</p></div>
+            <span class="route-progress" id="route-progress">0 de 8 lugares</span>
+          </div>
+          <div class="route-layout">
+            <div class="map-card">
+              <div class="map-topline"><span>ITÁLIA <i>·</i> ROTEIRO DO GRUPO</span></div>
+              <div class="map-visual">
+                <svg class="italy-map" viewBox="0 0 390 540" role="img" aria-label="Mapa da Itália com as cidades da viagem. Selecione um ponto para marcar uma cidade como visitada.">
+                  <rect width="390" height="540" fill="#edf3f1"/>
+                  <g id="map-land"></g>
+                  <path class="route-line" id="main-route"></path>
+                  <g class="daytrip-routes" id="daytrip-routes"></g>
+                  <g id="map-markers"></g>
+                </svg>
+              </div>
+              <div class="map-legend"><span><i class="route-swatch"></i>Roteiro principal</span><span><i class="daytrip-swatch"></i>Passeio de um dia</span></div>
             </div>
-            <div class="map-legend"><span><i class="route-swatch"></i>Roteiro principal</span><span><i class="daytrip-swatch"></i>Passeio de um dia</span></div>
+            <div class="itinerary-card">
+              <div class="itinerary-topline"><span>29 DEZ — 13 JAN</span><span>8 PARADAS</span></div>
+              <div class="itinerary-list" id="itinerary-list"></div>
+              <div class="itinerary-foot"><p>Assis, Siena, San Gimignano e Pisa: passeios de um dia com base em Florença.</p></div>
+            </div>
           </div>
-          <div class="itinerary-card">
-            <div class="itinerary-topline"><span>29 DEZ — 13 JAN</span><span>8 PARADAS</span></div>
-            <div class="itinerary-list" id="itinerary-list"></div>
-            <div class="itinerary-foot"><span class="foot-star" aria-hidden="true">✳</span><p>Assis, Siena, San Gimignano e Pisa: passeios de um dia com base em Florença.</p></div>
+        </section>
+
+        <section class="checklist-section" aria-labelledby="checklist-title">
+          <div class="section-heading">
+            <div><p class="eyebrow">ANTES DE PARTIR</p><h2 id="checklist-title">Últimos preparativos</h2></div>
+            <span class="checklist-progress" id="checklist-progress">0 de 3 concluídos</span>
           </div>
-        </div>
-      </section>
+          <p class="checklist-intro">Marque uma tarefa e ela será atualizada para todo o grupo.</p>
+          <div class="checklist-list" id="checklist-list"></div>
+        </section>
+      </div>
+
+      <div class="tab-panel" id="panel-numbers" role="tabpanel" aria-labelledby="tab-numbers" data-panel="numbers" hidden>
+        <section class="overview-section" aria-labelledby="overview-title">
+          <div class="section-heading">
+            <div><p class="eyebrow">O PLANO</p><h2 id="overview-title">A viagem, em números</h2></div>
+            <p class="section-note">Hospedagens divididas igualmente entre os cinco viajantes.</p>
+          </div>
+          <div class="overview-grid">
+            <article class="metric-card metric-total"><span class="metric-label">HOSPEDAGENS NO TOTAL</span><strong class="metric-value" id="total-cost">—</strong><span class="metric-caption">4 estadias · 14 noites reservadas</span></article>
+            <article class="metric-card"><span class="metric-label">COTA POR PESSOA</span><strong class="metric-value" id="share-cost">—</strong><span class="metric-caption">Sua parte igual do total</span></article>
+            <article class="metric-card"><span class="metric-label">PAGAMENTOS REGISTRADOS</span><strong class="metric-value" id="payments-total">—</strong><span class="metric-caption" id="payments-caption">Repasses e pagamentos do grupo</span></article>
+            <article class="metric-card metric-due"><span class="metric-label">LORETO · A PAGAR</span><strong class="metric-value" id="loreto-due">—</strong><span class="metric-caption">Valor total da hospedagem</span></article>
+          </div>
+        </section>
+
+        <section class="progress-section" aria-labelledby="progress-title">
+          <div class="section-heading">
+            <div><p class="eyebrow">ACOMPANHAMENTO DAS COTAS</p><h2 id="progress-title">Quanto cada pessoa já pagou?</h2></div>
+            <p class="section-note">A cota de cada viajante é <strong id="progress-share">—</strong></p>
+          </div>
+          <div class="progress-card">
+            <div class="progress-list" id="progress-list"></div>
+            <p class="progress-note">Só entram os pagamentos realmente lançados. As parcelas e os pagamentos à vista contam do mesmo jeito; o gráfico não presume pagamentos futuros.</p>
+          </div>
+        </section>
+
+        <section class="share-guide" aria-labelledby="share-guide-title">
+          <div class="section-heading">
+            <div><p class="eyebrow">PARA FACILITAR O ACERTO</p><h2 id="share-guide-title">Quanto cabe a cada pessoa?</h2></div>
+            <p class="section-note">Você pode pagar a parcela sugerida ou o total de uma vez.</p>
+          </div>
+          <div class="share-guide-grid" id="share-guide-grid"></div>
+          <p class="share-guide-note">As parcelas são uma referência, não cobranças automáticas. Registre cada pagamento quando ele acontecer. Os últimos valores podem variar alguns centavos para fechar o total informado.</p>
+        </section>
+      </div>
+
+      <div class="tab-panel" id="panel-payments" role="tabpanel" aria-labelledby="tab-payments" data-panel="payments" hidden>
+        <section class="finance-section" aria-label="Hospedagens e acerto de pagamentos">
+          <div class="finance-main">
+            <div class="section-heading">
+              <div><p class="eyebrow">CADA PARADA</p><h2>Hospedagens</h2></div>
+              <span class="small-note">Valores em reais</span>
+            </div>
+            <div class="stay-list" id="stay-list"></div>
+            <p class="fine-print">Os valores das hospedagens são o total de cada reserva, não o que já foi pago no cartão. Registre cada pagamento quando ele acontecer. A última parcela do cartão de uma hospedagem pode ter ajuste de centavos. A noite de chegada em Roma (29–30 dez) não está incluída.</p>
+          </div>
+          <aside class="settlement-card" aria-labelledby="settlement-title">
+            <div class="settlement-heading"><div><p class="eyebrow">ACERTO DO GRUPO</p><h2 id="settlement-title">Quem paga o quê</h2></div></div>
+            <p class="settlement-intro">A cota considera as hospedagens divididas entre cinco. O saldo diminui somente quando um pagamento é registrado.</p>
+            <div class="traveler-list" id="traveler-list"></div>
+          </aside>
+        </section>
+
+        <section class="payments-section" aria-labelledby="payments-title">
+          <div class="section-heading payments-heading">
+            <div><p class="eyebrow">ACERTO MÊS A MÊS</p><h2 id="payments-title">Registrar um pagamento</h2></div>
+            <p class="section-note">Registre uma parcela ou um pagamento à vista. Para a cota inteira, escolha “Todas as hospedagens”.</p>
+          </div>
+          <form class="payment-form" id="payment-form">
+            <label class="form-field"><span>Quem pagou</span><select id="payer-select" required></select></label>
+            <label class="form-field"><span>Hospedagem</span><select id="stay-select" required></select></label>
+            <label class="form-field"><span>Quem recebeu</span><select id="recipient-select" required></select></label>
+            <label class="form-field"><span>Mês do pagamento</span><input id="month-input" type="month" required></label>
+            <label class="form-field amount-field"><span>Valor (R$)</span><input id="amount-input" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="0,00" required></label>
+            <button class="button button-primary" type="submit">Adicionar pagamento</button>
+          </form>
+          <p class="message" id="message" role="status" aria-live="polite"></p>
+          <div class="history-heading"><h3>Histórico de pagamentos</h3><span id="payment-count">0 registros</span></div>
+          <div class="payment-table-wrap">
+            <table class="payment-table">
+              <thead><tr><th>MÊS</th><th>QUEM PAGOU</th><th>HOSPEDAGEM</th><th>QUEM RECEBEU</th><th>VALOR</th><th><span class="sr-only">Ação</span></th></tr></thead>
+              <tbody id="payments-body"></tbody>
+            </table>
+            <div class="empty-state" id="payments-empty" hidden><p>Nenhum pagamento por aqui ainda.</p><small>Os pagamentos registrados vão aparecer nesta lista.</small></div>
+          </div>
+        </section>
+      </div>
 
       <footer class="app-footer"><span>ANDIAMO <i>·</i> ITÁLIA EM GRUPO</span><span>Feito para viajar junto, sem perder a conta.</span></footer>
     </main>

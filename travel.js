@@ -13,6 +13,11 @@ const places = [
   { id: "san-gimignano", name: "San Gimignano", note: "Passeio de um dia", kind: "daytrip", number: "07", position: [11.0435, 43.4677], label: [-12, 33] },
   { id: "pisa", name: "Pisa", note: "Passeio de um dia", kind: "daytrip", number: "08", position: [10.4017, 43.7228], label: [-6, -31] }
 ];
+const checklistItems = [
+  { id: "train-tickets", label: "Comprar as passagens de trem" },
+  { id: "rental-car", label: "Reservar o carro" },
+  { id: "pack-bags", label: "Fazer as malas (e deixar espaço para lembranças!)" }
+];
 
 const italyCoast = {
   mainland: [
@@ -48,14 +53,14 @@ const italyCoast = {
 
 const storageKey = "andiamo-italy-trip-v2";
 const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
-const state = { payments: [], visited: [] };
+const state = { payments: [], visited: [], checklist: [] };
 const svgNamespace = "http://www.w3.org/2000/svg";
 let activeCode = null;
 let serverRevision = 0;
 let pendingWrites = 0;
 let syncGeneration = 0;
 let saveQueue = Promise.resolve();
-let lastConfirmedState = { payments: [], visited: [] };
+let lastConfirmedState = { payments: [], visited: [], checklist: [] };
 const message = document.querySelector("#message");
 const saveStatus = document.querySelector("#save-status");
 
@@ -281,6 +286,40 @@ function renderPlaces() {
   document.querySelector("#route-progress").textContent = `${visitedCount} de ${places.length} lugares`;
 }
 
+function activateTab(id) {
+  const selectedTab = document.querySelector(`.tab-button[data-tab="${id}"]`);
+  if (!selectedTab) return;
+  for (const tab of document.querySelectorAll(".tab-button")) {
+    const active = tab === selectedTab;
+    tab.classList.toggle("is-active", active);
+    tab.setAttribute("aria-selected", String(active));
+    tab.tabIndex = active ? 0 : -1;
+  }
+  for (const panel of document.querySelectorAll(".tab-panel")) {
+    panel.hidden = panel.dataset.panel !== id;
+  }
+}
+
+function renderChecklist() {
+  const list = document.querySelector("#checklist-list");
+  list.replaceChildren();
+  const completedCount = checklistItems.filter((item) => state.checklist.includes(item.id)).length;
+  document.querySelector("#checklist-progress").textContent = `${completedCount} de ${checklistItems.length} concluídos`;
+
+  for (const [index, item] of checklistItems.entries()) {
+    const completed = state.checklist.includes(item.id);
+    const button = element("button", `checklist-item${completed ? " is-complete" : ""}`);
+    button.type = "button";
+    button.dataset.check = item.id;
+    button.setAttribute("role", "checkbox");
+    button.setAttribute("aria-checked", String(completed));
+    const marker = element("span", "checklist-marker", completed ? "✓" : String(index + 1).padStart(2, "0"));
+    marker.setAttribute("aria-hidden", "true");
+    button.append(marker, element("span", "checklist-label", item.label));
+    list.append(button);
+  }
+}
+
 function mapPoint([longitude, latitude]) {
   return [(longitude - 6.5) * 30 + 10, (47.2 - latitude) * 47 + 12];
 }
@@ -361,10 +400,11 @@ function renderAll() {
   renderTravelers();
   renderPayments();
   renderPlaces();
+  renderChecklist();
 }
 
 function validateState(value, configuration = { travelers, stays }) {
-  if (!value || ![1, 2].includes(value.version) || !Array.isArray(value.payments) || !Array.isArray(value.visited)) {
+  if (!value || ![1, 2, 3].includes(value.version) || !Array.isArray(value.payments) || !Array.isArray(value.visited)) {
     throw new Error("O arquivo não tem um formato de dados reconhecido.");
   }
 
@@ -398,7 +438,15 @@ function validateState(value, configuration = { travelers, stays }) {
   if (validVisited.some((id) => !places.some((place) => place.id === id))) {
     throw new Error("O arquivo contém uma cidade desconhecida.");
   }
-  return { version: 2, payments: validPayments, visited: validVisited };
+  const validChecklist = value.checklist === undefined ? [] : value.checklist;
+  if (
+    !Array.isArray(validChecklist) ||
+    validChecklist.some((id) => typeof id !== "string" || !checklistItems.some((item) => item.id === id)) ||
+    new Set(validChecklist).size !== validChecklist.length
+  ) {
+    throw new Error("O arquivo contém uma tarefa inválida.");
+  }
+  return { version: 3, payments: validPayments, visited: validVisited, checklist: validChecklist };
 }
 
 function saveState(nextState) {
@@ -415,8 +463,9 @@ function saveState(nextState) {
 function updateState(nextState, successMessage) {
   state.payments = nextState.payments;
   state.visited = nextState.visited;
-  const snapshot = { payments: [...nextState.payments], visited: [...nextState.visited] };
-  saveState({ version: 2, ...snapshot });
+  state.checklist = nextState.checklist;
+  const snapshot = { payments: [...nextState.payments], visited: [...nextState.visited], checklist: [...nextState.checklist] };
+  saveState({ version: 3, ...snapshot });
   renderAll();
   if (!activeCode) {
     setMessage("Digite o código do grupo para salvar alterações.", "error");
@@ -433,7 +482,7 @@ function updateState(nextState, successMessage) {
       if (generation !== syncGeneration) return;
       serverRevision = result.revision;
       lastConfirmedState = snapshot;
-      saveState({ version: 2, ...snapshot });
+      saveState({ version: 3, ...snapshot });
       setSaveStatus("Sincronizado com o grupo");
       if (successMessage) setMessage(successMessage, "success");
       return true;
@@ -447,12 +496,14 @@ function updateState(nextState, successMessage) {
         serverRevision = latest.revision;
         state.payments = latest.payments;
         state.visited = latest.visited;
-        lastConfirmedState = { payments: [...latest.payments], visited: [...latest.visited] };
+        state.checklist = latest.checklist;
+        lastConfirmedState = { payments: [...latest.payments], visited: [...latest.visited], checklist: [...latest.checklist] };
       } catch {
         state.payments = [...lastConfirmedState.payments];
         state.visited = [...lastConfirmedState.visited];
+        state.checklist = [...lastConfirmedState.checklist];
       }
-      saveState({ version: 2, payments: [...state.payments], visited: [...state.visited] });
+      saveState({ version: 3, payments: [...state.payments], visited: [...state.visited], checklist: [...state.checklist] });
       renderAll();
       setSaveStatus("Sincronização não concluída", true);
       setMessage(`${error.message} Suas alterações não foram aplicadas; os dados confirmados foram mantidos.`, "error");
@@ -472,8 +523,11 @@ function applyRemoteState(remote) {
   ) {
     throw new Error("O servidor enviou dados em um formato inesperado.");
   }
+  if (!Array.isArray(remote.checklist)) {
+    throw new Error("O checklist ainda não está habilitado no servidor. Aplique a migração do Supabase e publique a função atualizada.");
+  }
   const settings = validateSettings(remote.settings);
-  const valid = validateState({ version: 2, payments: remote.payments, visited: remote.visited }, settings);
+  const valid = validateState({ version: 3, payments: remote.payments, visited: remote.visited, checklist: remote.checklist }, settings);
   travelers = settings.travelers;
   stays = settings.stays;
   shareGuides = settings.shareGuides;
@@ -483,8 +537,9 @@ function applyRemoteState(remote) {
   serverRevision = remote.revision;
   state.payments = valid.payments;
   state.visited = valid.visited;
-  lastConfirmedState = { payments: [...valid.payments], visited: [...valid.visited] };
-  saveState({ version: 2, payments: [...valid.payments], visited: [...valid.visited] });
+  state.checklist = valid.checklist;
+  lastConfirmedState = { payments: [...valid.payments], visited: [...valid.visited], checklist: [...valid.checklist] };
+  saveState({ version: 3, payments: [...valid.payments], visited: [...valid.visited], checklist: [...valid.checklist] });
   renderAll();
 }
 
@@ -605,7 +660,7 @@ function addPayment(event) {
   }
 
   const payment = { id: makeId(), month, from, to, stayId, amount, createdAt: Date.now() };
-  updateState({ version: 2, payments: [...state.payments, payment], visited: [...state.visited] }, "Pagamento registrado.")
+  updateState({ version: 3, payments: [...state.payments, payment], visited: [...state.visited], checklist: [...state.checklist] }, "Pagamento registrado.")
     .then((saved) => {
       if (saved) document.querySelector("#amount-input").value = "";
     });
@@ -615,17 +670,25 @@ function toggleVisited(id) {
   const visited = state.visited.includes(id)
     ? state.visited.filter((placeId) => placeId !== id)
     : [...state.visited, id];
-  updateState({ version: 2, payments: [...state.payments], visited }, "Roteiro atualizado.");
+  updateState({ version: 3, payments: [...state.payments], visited, checklist: [...state.checklist] }, "Roteiro atualizado.");
+}
+
+function toggleChecklistItem(id) {
+  const checklist = state.checklist.includes(id)
+    ? state.checklist.filter((itemId) => itemId !== id)
+    : [...state.checklist, id];
+  updateState({ version: 3, payments: [...state.payments], visited: [...state.visited], checklist }, "Lista atualizada para o grupo.");
 }
 
 function exportData() {
   try {
     const snapshot = {
       app: "andiamo-italy-trip",
-      version: 2,
+      version: 3,
       exportedAt: new Date().toISOString(),
       payments: state.payments,
-      visited: state.visited
+      visited: state.visited,
+      checklist: state.checklist
     };
     const file = new Blob([JSON.stringify(snapshot, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(file);
@@ -646,7 +709,7 @@ async function importData(event) {
   if (!file) return;
   try {
     const imported = validateState(JSON.parse(await file.text()));
-    if (!window.confirm("Importar este arquivo vai substituir os pagamentos e as cidades marcadas do grupo para todas as pessoas. Continuar?")) return;
+    if (!window.confirm("Importar este arquivo vai substituir os pagamentos, as cidades marcadas e o checklist do grupo para todas as pessoas. Continuar?")) return;
     updateState(imported, "Dados importados e sincronizados com o grupo.");
   } catch (error) {
     setMessage(`Não foi possível importar os dados: ${error.message}`, "error");
@@ -662,12 +725,35 @@ document.querySelector("#payments-body").addEventListener("click", (event) => {
   const button = event.target.closest("[data-remove]");
   if (!button) return;
   const nextPayments = state.payments.filter((payment) => payment.id !== button.dataset.remove);
-  updateState({ version: 2, payments: nextPayments, visited: [...state.visited] }, "Pagamento removido.");
+  updateState({ version: 3, payments: nextPayments, visited: [...state.visited], checklist: [...state.checklist] }, "Pagamento removido.");
 });
 document.querySelector("#itinerary-list").addEventListener("click", (event) => {
   const button = event.target.closest("[data-visit]");
   if (button) toggleVisited(button.dataset.visit);
 });
+document.querySelector("#checklist-list").addEventListener("click", (event) => {
+  const button = event.target.closest("[data-check]");
+  if (button) toggleChecklistItem(button.dataset.check);
+});
+document.querySelector(".tab-nav").addEventListener("click", (event) => {
+  const button = event.target.closest("[data-tab]");
+  if (button) activateTab(button.dataset.tab);
+});
+document.querySelector(".tab-nav").addEventListener("keydown", (event) => {
+  const buttons = [...document.querySelectorAll(".tab-button")];
+  const current = buttons.indexOf(event.target);
+  if (current < 0) return;
+  let next = current;
+  if (event.key === "ArrowRight") next = (current + 1) % buttons.length;
+  else if (event.key === "ArrowLeft") next = (current - 1 + buttons.length) % buttons.length;
+  else if (event.key === "Home") next = 0;
+  else if (event.key === "End") next = buttons.length - 1;
+  else return;
+  event.preventDefault();
+  buttons[next].focus();
+  activateTab(buttons[next].dataset.tab, true);
+});
+document.querySelector(".hero-details a").addEventListener("click", () => activateTab("payments"));
 document.querySelector(".italy-map").addEventListener("click", (event) => {
   const marker = event.target.closest("[data-place]");
   if (marker) toggleVisited(marker.dataset.place);
